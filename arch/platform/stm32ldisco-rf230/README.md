@@ -5,6 +5,7 @@
 Contiki-ng is not able to build assembly files with \*.s extension (only \*.S).
 Some fixes have been made into the main Makefile.include to make this work :
 
+```
 diff --git a/Makefile.include b/Makefile.include
 index 0a013f8..6e3a012 100644
 --- a/Makefile.include
@@ -19,4 +20,4 @@ index 0a013f8..6e3a012 100644
 +$(OBJECTDIR)/%.o: %.s | $(OBJECTDIR)
 +       $(TRACE_AS)
 +       $(Q)$(AS) $(ASFLAGS) -o $@ $<
-
+```
