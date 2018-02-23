@@ -1,0 +1,34 @@
+ifndef CONTIKI
+  $(error CONTIKI not defined! You must specify where CONTIKI resides!)
+endif
+
+CONTIKI_TARGET_DIRS += . dev startup_files/gcc
+
+CONTIKI_TARGET_SOURCEFILES += platform.c leds-arch.c uart.c stm32l1xx_it.c 
+
+CPU_START_SOURCEFILES = startup_stm32l1xx_md.s
+
+CONTIKI_SOURCEFILES += $(CONTIKI_TARGET_SOURCEFILES)
+
+CFLAGS += -DSTM32L152xB \
+          -DNO_EEPROM \
+
+CFLAGS += -I. \
+      -I$(CONTIKI)/platform/$(TARGET)/ \
+      -I$(CONTIKI)/platform/$(TARGET)/dev \
+      -I$(CONTIKI)/cpu/arm/stm32l1xx \
+      -I$(CONTIKI)/cpu/arm/stm32l1xx/STM32L1xx_CMSIS \
+      -I$(CONTIKI)/cpu/arm/stm32l1xx/STM32L1xx_HAL_Driver/Inc \
+      -I$(CONTIKI)/core
+
+#LDFLAGS += --specs=nano.specs
+
+LDSCRIPT = $(CONTIKI)/arch/platform/$(TARGET)/linker/gcc/STM32L152RBTx_FLASH.ld
+
+CLEAN += *.stm32ldisco-rf230
+
+### Define the CPU directory
+CONTIKI_CPU=$(CONTIKI)/arch/cpu/stm32l1xx
+include $(CONTIKI_CPU)/Makefile.stm32l1xx
+
+MODULES += os/net os/net/mac os/net/mac/framer
