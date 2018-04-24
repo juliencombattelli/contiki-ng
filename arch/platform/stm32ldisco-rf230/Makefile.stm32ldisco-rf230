@@ -2,16 +2,25 @@ ifndef CONTIKI
   $(error CONTIKI not defined! You must specify where CONTIKI resides!)
 endif
 
-CONTIKI_TARGET_DIRS += . dev startup_files/gcc
+### Include Radio specific module
+CFLAGS += -DMODULE_AT86RF233=1
+AT86RF2XX_PLATFORM=st/stm32l1xx
+include $(CONTIKI)/arch/platform/stm32ldisco-rf230/dev/at86rf2xx/Makefile.at86rf2xx
 
-CONTIKI_TARGET_SOURCEFILES += platform.c leds-arch.c uart.c stm32l1xx_it.c 
+CONTIKI_TARGET_DIRS += . dev startup_files/gcc $(addprefix dev/at86rf2xx/, $(AT86RF2XX_DIRS))
+
+CONTIKI_TARGET_SOURCEFILES += platform.c leds-arch.c uart1.c spi2.c console.c stm32l1xx_it.c at86rf2xx-radio.c $(AT86RF2XX_SOURCEFILES) 
 
 CPU_START_SOURCEFILES = startup_stm32l1xx_md.s
 
 CONTIKI_SOURCEFILES += $(CONTIKI_TARGET_SOURCEFILES)
 
-CFLAGS += -DSTM32L152xB \
-          -DNO_EEPROM \
+CFLAGS += -DSTM32 \
+          -DSTM32L1 \
+          -DSTM32L152xB \
+          -DSTM32L152RBTx \
+          -DSTM32L_DISCOVERY \
+          -DUSE_HAL_DRIVER
 
 CFLAGS += -I. \
       -I$(CONTIKI)/platform/$(TARGET)/ \
@@ -27,8 +36,9 @@ LDSCRIPT = $(CONTIKI)/arch/platform/$(TARGET)/linker/gcc/STM32L152RBTx_FLASH.ld
 
 CLEAN += *.stm32ldisco-rf230
 
-### Define the CPU directory
+### Include CPU specific module
 CONTIKI_CPU=$(CONTIKI)/arch/cpu/stm32l1xx
 include $(CONTIKI_CPU)/Makefile.stm32l1xx
 
 MODULES += os/net os/net/mac os/net/mac/framer
+

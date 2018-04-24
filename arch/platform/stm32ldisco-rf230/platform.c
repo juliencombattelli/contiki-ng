@@ -1,18 +1,19 @@
 /*---------------------------------------------------------------------------*/
 #include "contiki.h"
 #include "dev/board.h"
-#include "dev/uart.h"
+#include "dev/console.h"
 #include "dev/leds.h"
 #include "dev/button-sensor.h"
 #include "dev/serial-line.h"
 #include "dev/slip.h"
+#include "dev/at86rf2xx-radio.h"
 #include "lib/random.h"
 #include "net/netstack.h"
 #include "net/mac/framer/frame802154.h"
 #include "net/linkaddr.h"
 #include "sys/platform.h"
 
-#include "stm32l1xx_hal.h"
+#include "stm32l1xx.h"
 
 #include <stdint.h>
 #include <string.h>
@@ -103,8 +104,10 @@ platform_init_stage_one(void)
   HAL_Init();
   SystemClock_Config();
 
-  uart_arch_init();
+  console_arch_init();
   printf("UART is workig !! \r\n");
+
+  radio_arch_init(&at86rf2xx);
 
   leds_init();
   fade(LEDS_YELLOW);
