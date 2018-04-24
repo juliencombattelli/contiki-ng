@@ -7,16 +7,18 @@
 #define RELOAD_VALUE			((F_CPU/CLOCK_CONF_SECOND) - 1)
 
 static volatile unsigned long seconds;
-static volatile clock_time_t ticks;
+//static volatile clock_time_t ticks;
 
 /* This interrupt handler will increase the tick counter */
 void SysTick_Handler(void)
 {
 	ENERGEST_ON(ENERGEST_TYPE_IRQ);
 
-	ticks++;
-	if((ticks % CLOCK_SECOND) == 0)
-	{
+	//ticks++;
+    HAL_IncTick();
+	//if((ticks % CLOCK_SECOND) == 0)
+	if((HAL_GetTick() % CLOCK_SECOND) == 0)
+    {
 		seconds++;
 		energest_flush();
 	}
@@ -44,7 +46,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 
 void clock_init(void)
 {
-	ticks = 0;
+	//ticks = 0;
 	seconds = 0;
 }
 
@@ -60,20 +62,22 @@ void clock_set_seconds(unsigned long sec)
 
 clock_time_t clock_time(void)
 {
-	return ticks;
+	//return ticks;
+    return HAL_GetTick();
 }
 
 /* Busy-wait the CPU for a duration depending on CPU speed */
 void clock_delay(unsigned int i)
 {
-	for(; i > 0; i--)
+	/*for(; i > 0; i--)
 	{
 		unsigned int j;
 		for(j = 50; j > 0; j--)
 		{
 			__NOP();
 		}
-	}
+	}*/
+    HAL_Delay(i);
 }
 
 /* Wait for a multiple of clock ticks (7.8ms per tick at 128Hz) */
