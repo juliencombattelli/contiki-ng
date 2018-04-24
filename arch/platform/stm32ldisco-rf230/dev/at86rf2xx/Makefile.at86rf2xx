@@ -1,0 +1,16 @@
+ifndef AT86RF2XX_PLATFORM
+  $(error AT86RF2XX_PLATFORM not defined! AT86RF2XX_PLATFORM must be defined to the path to the \
+          platform code for the driver, in the form vendor/mcu (example: AT86RF2XX_PLATFORM=st/stm32l1xx))
+endif
+
+# Get current Makefile location
+AT86RF2XX := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
+# Set all source files
+AT86RF2XX_DIRS += driver/src platform/$(AT86RF2XX_PLATFORM)/src
+AT86RF2XX_SOURCEFILES += at86rf2xx.c at86rf2xx-driver.c at86rf2xx-platform.c
+
+CFLAGS += -I$(AT86RF2XX)/driver/include \
+          -I$(AT86RF2XX)/platform/$(AT86RF2XX_PLATFORM)/include
+
+
