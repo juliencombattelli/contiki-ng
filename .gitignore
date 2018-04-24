@@ -1,5 +1,9 @@
 # Ignore everything (for development branch only)
 *
+examples/*
+os/*
+tests/*
+tools/*
 
 !arch/cpu/stm32l1xx/
 !arch/dev/at86rf2xx/
