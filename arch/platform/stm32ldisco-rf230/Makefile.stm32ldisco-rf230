@@ -5,9 +5,9 @@ endif
 ### Include Radio specific module
 CFLAGS += -DMODULE_AT86RF233=1
 AT86RF2XX_PLATFORM=st/stm32l1xx
-include $(CONTIKI)/arch/platform/stm32ldisco-rf230/dev/at86rf2xx/Makefile.at86rf2xx
+include $(CONTIKI)/arch/dev/at86rf2xx/Makefile.at86rf2xx
 
-CONTIKI_TARGET_DIRS += . dev startup_files/gcc $(addprefix dev/at86rf2xx/, $(AT86RF2XX_DIRS))
+CONTIKI_TARGET_DIRS += . dev startup_files/gcc $(addprefix ../../dev/at86rf2xx/, $(AT86RF2XX_DIRS))
 
 CONTIKI_TARGET_SOURCEFILES += platform.c leds-arch.c uart1.c spi2.c console.c stm32l1xx_it.c at86rf2xx-radio.c $(AT86RF2XX_SOURCEFILES) 
 

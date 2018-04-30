@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 #ifdef AT86RF2XX_DEBUG
-	#define AT86RF2XX_PRINTF(...) printf(__VA_ARGS__)
+    #define AT86RF2XX_PRINTF(...) printf(__VA_ARGS__)
 #else
     #define AT86RF2XX_PRINTF(...)
 #endif
