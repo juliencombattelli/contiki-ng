@@ -17,6 +17,8 @@
 
 #define USART_CONF_BAUDRATE 115200
 
+#define NETSTACK_CONF_RADIO   at86rf2xx_driver
+
 /*---------------------------------------------------------------------------*/
 /* Include CPU-related configuration */
 #include "stm32l1xx-conf.h"
