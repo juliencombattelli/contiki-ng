@@ -18,7 +18,7 @@ typedef struct at86rf2xx_hal at86rf2xx_hal_t;
 extern "C" {
 #endif /* __cplusplus */
 
-void at86rf2xx_hal_spi_write(at86rf2xx_hal_t *hal, uint8_t *data, uint16_t size);
+void at86rf2xx_hal_spi_write(at86rf2xx_hal_t *hal, const uint8_t *data, uint16_t size);
 void at86rf2xx_hal_spi_read(at86rf2xx_hal_t *hal, uint8_t *data, uint16_t size);
 void at86rf2xx_hal_reset(at86rf2xx_hal_t *hal, uint8_t state);
 void at86rf2xx_hal_cs(at86rf2xx_hal_t *hal, uint8_t state);

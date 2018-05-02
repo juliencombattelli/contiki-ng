@@ -81,20 +81,21 @@ void        at86rf2xx_set_csma_seed(at86rf2xx_t *dev, uint8_t entropy[2]);
 void        at86rf2xx_set_option(at86rf2xx_t *dev, uint16_t option, bool state);
 void        at86rf2xx_set_state(at86rf2xx_t *dev, uint8_t state);
 void        at86rf2xx_reset_state_machine(at86rf2xx_t *dev);
-size_t      at86rf2xx_send(at86rf2xx_t *dev, uint8_t *data, size_t len);
+size_t      at86rf2xx_send(at86rf2xx_t *dev, const uint8_t *data, size_t len);
 void        at86rf2xx_tx_prepare(at86rf2xx_t *dev);
-size_t      at86rf2xx_tx_load(at86rf2xx_t *dev, uint8_t *data, size_t len, size_t offset);
+size_t      at86rf2xx_tx_load(at86rf2xx_t *dev, const uint8_t *data, size_t len, size_t offset);
 void        at86rf2xx_tx_exec(at86rf2xx_t *dev);
 size_t      at86rf2xx_rx_len(at86rf2xx_t *dev);
 void        at86rf2xx_rx_read(at86rf2xx_t *dev, uint8_t *data, size_t len, size_t offset);
 uint8_t     at86rf2xx_reg_read(at86rf2xx_t *dev, uint8_t addr);
 void        at86rf2xx_reg_write(at86rf2xx_t *dev, uint8_t addr, uint8_t value);
 void        at86rf2xx_sram_read(at86rf2xx_t *dev, uint8_t offset, uint8_t *data, size_t len);
-void        at86rf2xx_sram_write(at86rf2xx_t *dev, uint8_t offset, uint8_t *data, size_t len);
+void        at86rf2xx_sram_write(at86rf2xx_t *dev, uint8_t offset, const uint8_t *data, size_t len);
 void        at86rf2xx_fb_read(at86rf2xx_t *dev, uint8_t *data, size_t len);
 void        at86rf2xx_force_trx_off(at86rf2xx_t *dev);
 uint8_t     at86rf2xx_get_status(at86rf2xx_t *dev);
 void        at86rf2xx_assert_awake(at86rf2xx_t *dev);
 void        at86rf2xx_hardware_reset(at86rf2xx_t *dev);
+bool        at86rf2xx_cca(at86rf2xx_t *dev);
 
 #endif /* AT86RF2XX_DRIVER_INCLUDE_AT86RF2XX_H_ */

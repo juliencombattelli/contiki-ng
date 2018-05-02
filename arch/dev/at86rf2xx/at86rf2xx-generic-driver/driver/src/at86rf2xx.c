@@ -65,7 +65,7 @@ static const uint8_t dbm_to_tx_pow[] = {0x0f, 0x0f, 0x0f, 0x0e, 0x0e, 0x0e,
                                         0x05, 0x03, 0x00};
 #endif
 
-bool _at86rf2xx_cca(at86rf2xx_t *dev)
+bool at86rf2xx_cca(at86rf2xx_t *dev)
 {
     uint8_t tmp;
     uint8_t status;
@@ -585,7 +585,7 @@ void at86rf2xx_reset_state_machine(at86rf2xx_t *dev)
     at86rf2xx_force_trx_off(dev);
 }
 
-size_t at86rf2xx_send(at86rf2xx_t *dev, uint8_t *data, size_t len)
+size_t at86rf2xx_send(at86rf2xx_t *dev, const uint8_t *data, size_t len)
 {
     /* check data length */
     if (len > AT86RF2XX_MAX_PKT_LENGTH)
@@ -625,7 +625,7 @@ void at86rf2xx_tx_prepare(at86rf2xx_t *dev)
     dev->frame_len = IEEE802154_FCS_LEN;
 }
 
-size_t at86rf2xx_tx_load(at86rf2xx_t *dev, uint8_t *data, size_t len, size_t offset)
+size_t at86rf2xx_tx_load(at86rf2xx_t *dev, const uint8_t *data, size_t len, size_t offset)
 {
     dev->frame_len += (uint8_t)len;
     at86rf2xx_sram_write(dev, offset + 1, data, len);
@@ -698,13 +698,13 @@ void at86rf2xx_sram_read(at86rf2xx_t *dev, uint8_t offset, uint8_t *data, size_t
 	at86rf2xx_hal_cs(&dev->hal, 1);
 }
 
-void at86rf2xx_sram_write(at86rf2xx_t *dev, uint8_t offset, uint8_t *data, size_t len)
+void at86rf2xx_sram_write(at86rf2xx_t *dev, uint8_t offset, const uint8_t *data, size_t len)
 {
     uint8_t writeCommand = AT86RF2XX_ACCESS_SRAM | AT86RF2XX_ACCESS_WRITE;
     at86rf2xx_hal_cs(&dev->hal, 0);
 	at86rf2xx_hal_spi_write(&dev->hal, &writeCommand, 1);
 	at86rf2xx_hal_spi_write(&dev->hal, &offset, 1);
-	at86rf2xx_hal_spi_read(&dev->hal, data, len);
+	at86rf2xx_hal_spi_write(&dev->hal, data, len);
 	at86rf2xx_hal_cs(&dev->hal, 1);
 }
 

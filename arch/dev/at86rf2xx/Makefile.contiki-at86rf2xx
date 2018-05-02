@@ -1,0 +1,5 @@
+include $(CONTIKI)/arch/dev/at86rf2xx/at86rf2xx-generic-driver/Makefile.at86rf2xx
+
+CONTIKI_AT86RF2XX_DIRS += . $(addprefix at86rf2xx-generic-driver/, $(AT86RF2XX_DIRS))
+CONTIKI_AT86RF2XX_SOURCEFILES += at86rf2xx-contiki-driver.c $(AT86RF2XX_SOURCEFILES)
+

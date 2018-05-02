@@ -8,9 +8,9 @@
 #include <at86rf2xx-hal.h>
 #include <at86rf2xx-driver.h>
 
-inline void at86rf2xx_hal_spi_write(at86rf2xx_hal_t *hal, uint8_t *data, uint16_t size)
+inline void at86rf2xx_hal_spi_write(at86rf2xx_hal_t *hal, const uint8_t *data, uint16_t size)
 {
-	HAL_SPI_Transmit(&hal->hspi, data, size, 0xFFFFFFFF);
+	HAL_SPI_Transmit(&hal->hspi, (uint8_t*)data, size, 0xFFFFFFFF);// ST HAL does not use 'const' for read-only parameters ...
 }
 
 inline void at86rf2xx_hal_spi_read(at86rf2xx_hal_t *hal, uint8_t *data, uint16_t size)
