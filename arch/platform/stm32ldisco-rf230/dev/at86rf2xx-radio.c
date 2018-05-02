@@ -44,7 +44,7 @@ void radio_arch_init(at86rf2xx_t *radio)
 	spi2_arch_init(&radio->hal.hspi);
 
 	/* Initialize Radio */
-	at86rf2xx_init(&at86rf2xx);
+	//at86rf2xx_init(&at86rf2xx);
 }
 
 void EXTI2_IRQHandler(void)
