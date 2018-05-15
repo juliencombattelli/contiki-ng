@@ -15,6 +15,8 @@
 #define USARTx_RX_GPIO_PORT             GPIOA
 #define USARTx_RX_AF                    GPIO_AF7_USART1
 
+#define USARTx_IRQn                     USART1_IRQn
+
 void uart1_arch_init(UART_HandleTypeDef *UartHandle)
 {
 	UartHandle->Instance        = USARTx;
@@ -50,6 +52,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 	GPIO_InitStruct.Alternate = USARTx_RX_AF;
 
 	HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &GPIO_InitStruct);
+
+    HAL_NVIC_SetPriority(USARTx_IRQn, 0, 1);
+    HAL_NVIC_EnableIRQ(USARTx_IRQn);
 }
 
 void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
