@@ -97,6 +97,8 @@ bool at86rf2xx_cca(at86rf2xx_t *dev)
 
 int at86rf2xx_init(at86rf2xx_t *dev)
 {
+    /* reset number of events */
+    dev->events = 0;
 	/* initialize state machine */
 	dev->idle_state = AT86RF2XX_STATE_TRX_OFF;
 	dev->state = AT86RF2XX_STATE_SLEEP;
@@ -223,7 +225,7 @@ void at86rf2xx_set_addr_long(at86rf2xx_t *dev, uint64_t addr)
     }
 }
 
-__INLINE uint8_t at86rf2xx_get_chan(at86rf2xx_t *dev)
+uint8_t at86rf2xx_get_chan(at86rf2xx_t *dev)
 {
 	return dev->chan;
 }
@@ -291,7 +293,7 @@ void at86rf2xx_set_freq(at86rf2xx_t *dev, at86rf2xx_freq_t freq_)
 }
 #endif
 
-__INLINE uint16_t at86rf2xx_get_pan(at86rf2xx_t *dev)
+uint16_t at86rf2xx_get_pan(at86rf2xx_t *dev)
 {
 	return dev->pan;
 }
@@ -361,7 +363,7 @@ void at86rf2xx_set_txpower(at86rf2xx_t *dev, int16_t txpower)
 #endif
 }
 
-__INLINE uint8_t at86rf2xx_get_max_retries(at86rf2xx_t *dev)
+uint8_t at86rf2xx_get_max_retries(at86rf2xx_t *dev)
 {
 	return (at86rf2xx_reg_read(dev, AT86RF2XX_REG__XAH_CTRL_0) >> 4);
 }
@@ -622,7 +624,8 @@ void at86rf2xx_tx_prepare(at86rf2xx_t *dev)
         dev->idle_state = state;
     }
     at86rf2xx_set_state(dev, AT86RF2XX_STATE_TX_ARET_ON);
-    dev->frame_len = IEEE802154_FCS_LEN;
+    dev->frame_len = 0;//IEEE802154_FCS_LEN;
+
 }
 
 size_t at86rf2xx_tx_load(at86rf2xx_t *dev, const uint8_t *data, size_t len, size_t offset)
@@ -684,7 +687,7 @@ void at86rf2xx_reg_write(at86rf2xx_t *dev, uint8_t addr, uint8_t value)
     uint8_t writeCommand = addr | AT86RF2XX_ACCESS_REG | AT86RF2XX_ACCESS_WRITE;
     at86rf2xx_hal_cs(&dev->hal, 0);
 	at86rf2xx_hal_spi_write(&dev->hal, &writeCommand, 1);
-	at86rf2xx_hal_spi_read(&dev->hal, &value, 1);
+	at86rf2xx_hal_spi_write(&dev->hal, &value, 1);
 	at86rf2xx_hal_cs(&dev->hal, 1);
 }
 
