@@ -12,7 +12,6 @@
 #include "net/mac/framer/frame802154.h"
 #include "net/linkaddr.h"
 #include "sys/platform.h"
-
 #include "stm32l1xx.h"
 
 #include <stdint.h>
@@ -40,6 +39,7 @@ void SystemClock_Config(void)
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     //Error_Handler();
+    while(1);
   }
 
   /* Set Voltage scale1 as MCU will run at 32MHz */
@@ -59,6 +59,7 @@ void SystemClock_Config(void)
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
   {
     //Error_Handler();
+    while(1);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -81,16 +82,23 @@ fade(unsigned char l)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+void
+set_lladdr(void)
+{
+  linkaddr_t addr;
+  uint8_t lladdr[] = {0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88};
+  memset(&addr, 0, sizeof(linkaddr_t));
+  memcpy(addr.u8, lladdr, sizeof(addr.u8));
+  linkaddr_set_node_addr(&addr);
+}
+/*---------------------------------------------------------------------------*/
+void
 set_rf_params(void)
 {
-  uint16_t short_addr = (0xab << 8) | 0x89;
-  uint8_t ext_addr[8] = {0x01,0x23,0x45,0x67,0x89,0xab};
-
   NETSTACK_RADIO.set_value(RADIO_PARAM_PAN_ID, IEEE802154_PANID);
-  NETSTACK_RADIO.set_value(RADIO_PARAM_16BIT_ADDR, short_addr);
-  NETSTACK_RADIO.set_value(RADIO_PARAM_CHANNEL, 13);
-  NETSTACK_RADIO.set_object(RADIO_PARAM_64BIT_ADDR, ext_addr, 8);
+  NETSTACK_RADIO.set_value(RADIO_PARAM_16BIT_ADDR, 0x0230);
+  NETSTACK_RADIO.set_value(RADIO_PARAM_CHANNEL, 11);
+//  NETSTACK_RADIO.set_object(RADIO_PARAM_64BIT_ADDR, ext_addr, 8);
 }
 
 
@@ -102,7 +110,6 @@ platform_init_stage_one(void)
   SystemClock_Config();
 
   console_arch_init();
-  printf("UART is workig !! \r\n");
 
   radio_arch_init(&at86rf2xx);
 
@@ -143,6 +150,9 @@ platform_init_stage_two()
   crypto_init();
   crypto_disable();
 #endif
+    
+  /* Populate linkaddr_node_addr */
+  set_lladdr();
 
   __enable_irq();
 
@@ -154,9 +164,8 @@ platform_init_stage_three()
 {
   LOG_INFO("%s\n", BOARD_STRING);
 
-  set_rf_params();
-
   //process_start(&sensors_process, NULL);
+  set_rf_params();
 
   fade(LEDS_GREEN);
 }
