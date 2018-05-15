@@ -9,6 +9,8 @@
 #define AT86RF2XX_DRIVER_INCLUDE_AT86RF2XX_H_
 
 #include <at86rf2xx-hal.h>
+#include <at86rf2xx-registers.h>
+#include <at86rf2xx-defaults.h>
 #include <stdint.h>
 #include <stdbool.h>
 

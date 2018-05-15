@@ -6,7 +6,6 @@
  */
 
 #include <at86rf2xx-hal.h>
-#include <at86rf2xx-driver.h>
 
 inline void at86rf2xx_hal_spi_write(at86rf2xx_hal_t *hal, const uint8_t *data, uint16_t size)
 {

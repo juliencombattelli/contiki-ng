@@ -1,7 +1,4 @@
-#include <at86rf2xx-defaults.h>
-#include <at86rf2xx-driver.h>
-#include <at86rf2xx-hal.h>
-#include <at86rf2xx-registers.h>
+#include "at86rf2xx.h"
 
 #include "contiki.h"
 
@@ -11,6 +8,7 @@
 #define LOG_LEVEL           LOG_LEVEL_INFO
 #define LOG_MODULE          "at86rf2xx"
 
+at86rf2xx_t at86rf2xx;
 
 static int _at86rf2xx_init(void)
 {

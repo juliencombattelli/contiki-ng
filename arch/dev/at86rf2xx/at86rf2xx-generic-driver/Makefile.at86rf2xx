@@ -8,7 +8,7 @@ AT86RF2XX := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 # Set all source files
 AT86RF2XX_DIRS += driver/src platform/$(AT86RF2XX_PLATFORM)/src
-AT86RF2XX_SOURCEFILES += at86rf2xx.c at86rf2xx-driver.c at86rf2xx-platform.c
+AT86RF2XX_SOURCEFILES += at86rf2xx.c at86rf2xx-platform.c
 
 CFLAGS += -I$(AT86RF2XX)/driver/include \
           -I$(AT86RF2XX)/platform/$(AT86RF2XX_PLATFORM)/include

@@ -1,10 +1,7 @@
 #ifndef DEV_RADIO_H_
 #define DEV_RADIO_H_
 
-#include <at86rf2xx-defaults.h>
-#include <at86rf2xx-driver.h>
-#include <at86rf2xx-hal.h>
-#include <at86rf2xx-registers.h>
+#include <at86rf2xx.h>
 
 #ifdef __cplusplus
 extern "C" {

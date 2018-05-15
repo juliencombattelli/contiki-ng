@@ -1,9 +1,11 @@
 #include "at86rf2xx-radio.h"
+#include "at86rf2xx-contiki-driver.h"
 #include "spi2.h"
 
 void radio_arch_init(at86rf2xx_t *radio)
 {
-	/* Enable GPIOB clock */
+	printf("radio arch init\n");
+    /* Enable GPIOB clock */
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 
 	/* Common init values for GPIOs */
