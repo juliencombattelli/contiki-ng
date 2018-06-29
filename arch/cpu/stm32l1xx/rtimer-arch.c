@@ -47,11 +47,16 @@ static volatile rtimer_clock_t timeout_value = 0;
 
 TIM_HandleTypeDef htim2;
 
+/*
+ * @brief Timer 2 IRQ Handler
+ *        It is responsible for the clock update
+ */
 void TIM2_IRQHandler(void)
 {
 	ENERGEST_ON(ENERGEST_TYPE_IRQ);
 
-	rtimer_clock++;
+	/* Update clock */
+    rtimer_clock++;
 
 	/* clear interrupt pending flag */
 	__HAL_TIM_CLEAR_IT(&htim2, TIM_IT_UPDATE);
@@ -63,25 +68,31 @@ void TIM2_IRQHandler(void)
 	ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
 
+/*
+ * @brief Initialize the rtimer module
+ */
 void rtimer_arch_init(void)
 {
 	TIM_ClockConfigTypeDef clock_source_config;
 	TIM_OC_InitTypeDef oc_config;
 
-	__TIM2_CLK_ENABLE();
+	/* Enable the clock of the timer2 peripheral */
+    __TIM2_CLK_ENABLE();
+
+    /* Configure timer2 instance */
 	htim2.Instance = TIM2;
 	htim2.Init.Prescaler = RTIMER_PRESCALER;
 	htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
 	htim2.Init.Period = 1;
-
 	HAL_TIM_Base_Init(&htim2);
 	HAL_TIM_Base_Start_IT(&htim2);
 
+    /* Configure clock source for timer2 */
 	clock_source_config.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
 	HAL_TIM_ConfigClockSource(&htim2, &clock_source_config);
 
+    /* Output Compare configuration */
 	HAL_TIM_OC_Init(&htim2);
-
 	oc_config.OCMode = TIM_OCMODE_TIMING;
 	oc_config.Pulse = 0;
 	oc_config.OCPolarity = TIM_OCPOLARITY_HIGH;
@@ -92,17 +103,25 @@ void rtimer_arch_init(void)
 	/* Enable TIM2 Update interrupt */
 	__HAL_TIM_ENABLE_IT(&htim2, TIM_IT_UPDATE);
 
+    /* Enable TIM2
 	__HAL_TIM_ENABLE(&htim2);
 
+    /* Configure NVIC */
 	HAL_NVIC_SetPriority((IRQn_Type)TIM2_IRQn, 0, 0);
 	HAL_NVIC_EnableIRQ((IRQn_Type)(TIM2_IRQn));
 }
 
+/*
+ * @brief Retrieve the actual clock value
+ */ 
 rtimer_clock_t rtimer_arch_now(void)
 {
   return rtimer_clock;
 }
 
+/*
+ * @brief Schedule a new timeout, overriding older one
+ */
 void rtimer_arch_schedule(rtimer_clock_t t)
 {
 	timeout_value = rtimer_clock + t;

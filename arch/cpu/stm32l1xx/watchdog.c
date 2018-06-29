@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include "dev/watchdog.h"
 
+/*
+ * This module is not used
+ */
+
 void watchdog_init(void)
 {
 }
