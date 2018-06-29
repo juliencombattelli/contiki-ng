@@ -43,6 +43,7 @@ extern "C" {
  */
 #ifdef MODULE_AT86RF212B
 #define AT86RF2XX_PARTNUM           AT86RF212B_PARTNUM
+#warning Support of AT86RF212B is not complete
 #elif MODULE_AT86RF232
 #define AT86RF2XX_PARTNUM           AT86RF232_PARTNUM
 #elif MODULE_AT86RF233

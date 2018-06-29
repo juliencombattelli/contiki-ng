@@ -9,9 +9,15 @@
 extern "C" {
 #endif 
 
+/**
+ * @brief   Driver declaration
+ */
 extern at86rf2xx_t at86rf2xx;
 extern const struct radio_driver at86rf2xx_driver; 
 
+/**
+ * @brief   IRQ handler called on data received
+ */
 void at86rf2xx_irq_handler(void); 
 
 #ifdef __cplusplus

@@ -11,6 +11,9 @@
 #include "stm32l1xx.h"
 #include <stdint.h>
 
+/* 
+ * Define at86rf2xx_hal struct for STM32L1 MCU family
+ */
 struct at86rf2xx_hal
 {
 	SPI_HandleTypeDef hspi;

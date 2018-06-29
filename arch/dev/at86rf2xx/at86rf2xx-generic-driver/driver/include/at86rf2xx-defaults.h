@@ -24,6 +24,7 @@ extern "C" {
   */
 //#ifdef MODULE_AT86RF212B
 /* the AT86RF212B has a sub-1GHz radio */
+// TODO channels must be adapted according to the frequency band used (EU=1ch, US=10ch, ...)
 //#define AT86RF2XX_MIN_CHANNEL           (0)
 //#define AT86RF2XX_MAX_CHANNEL           (10)
 //#define AT86RF2XX_DEFAULT_CHANNEL       (5)

@@ -9,6 +9,10 @@
 #define LOG_LEVEL           LOG_LEVEL_INFO
 #define LOG_MODULE          "at86rf2xx"
 
+/**
+ * @brief   String version of all parameters used.
+ *          Used for logging.
+ */
 char* param_to_str[] = {
     "RADIO_PARAM_POWER_MODE",
     "RADIO_PARAM_CHANNEL",
@@ -29,10 +33,19 @@ char* param_to_str[] = {
     "RADIO_CONST_TXPOWER_MAX"
 };
 
+/**
+ * @brief   Contiki-NG process declaration to handle packet reception
+ */
 PROCESS(at86rf2xx_process, "AT86RF2XX driver");
 
+/**
+ * @brief   AT86RF2XX driver definition
+ */
 at86rf2xx_t at86rf2xx;
 
+/**
+ * @brief   Initialize the driver and start the reception process
+ */
 static int _at86rf2xx_init(void)
 {
     LOG_INFO_("RF: Init\n");
@@ -41,6 +54,9 @@ static int _at86rf2xx_init(void)
     return ret;
 }
 
+/**
+ * @brief   Send a packet to the radio to be emit later
+ */
 static int _at86rf2xx_prepare(const void *payload, unsigned short payload_len)
 {
     LOG_INFO("RF: Prepare (%d)\n", payload_len);
@@ -55,6 +71,9 @@ static int _at86rf2xx_prepare(const void *payload, unsigned short payload_len)
     return RADIO_TX_OK;
 }
 
+/**
+ * @brief   Tell the radio to transmit a packet previously prepared
+ */
 static int _at86rf2xx_transmit(unsigned short transmit_len)
 {
     LOG_INFO("RF: Transmit (%d)\n", transmit_len);
@@ -68,6 +87,10 @@ static int _at86rf2xx_transmit(unsigned short transmit_len)
     return RADIO_TX_OK;
 }
 
+/**
+ * @brief   Perform a packet preparation and transmition
+ * @result  Return 
+ */
 static int _at86rf2xx_send(const void *payload, unsigned short payload_len)
 {
     int ret;
@@ -81,27 +104,35 @@ static int _at86rf2xx_send(const void *payload, unsigned short payload_len)
     return ret;
 }
 
+/**
+ * @brief   Read a packet
+ * @return  Return the number of byte read
+ */
 static int _at86rf2xx_read(void *buf, unsigned short buf_len)
 {
     size_t pkt_len = at86rf2xx_rx_len(&at86rf2xx);
-    printf("Frame length: %u bytes\r\n", pkt_len);
-
-    /*  Print the frame, byte for byte  */
-    printf("Frame dump (ASCII):\r\n");
-    uint8_t data[pkt_len];
-    at86rf2xx_rx_read(&at86rf2xx, data, pkt_len, 0);
-    for (size_t d = 0; d < pkt_len; d++)
-        printf("%c", (char)data[d]);
-    printf("\r\n");
+    if (pkt_len != 0) // There is something to read
+    {
+        uint8_t data[pkt_len];
+        at86rf2xx_rx_read(&at86rf2xx, data, pkt_len, 0);
+    }
     return pkt_len;
 }
 
+/**
+ * @brief   Perform a clear channel assessment
+ * @return  Return 1 if channel is clear, 0 otherwise
+ */
 static int _at86rf2xx_channel_clear(void)
 {
     LOG_INFO_("RF: channel clear\n");
-    return at86rf2xx_cca(&at86rf2xx); // FIXME
+    return at86rf2xx_cca(&at86rf2xx) == true ? 1 : 0; 
 }
 
+/**
+ * @brief   Check if the radio is receiving data
+ * @return  Return 1 if there is an incoming frame, 0 otherwise
+ */
 static int _at86rf2xx_receiving_packet(void)
 {
     int ret = 0;
@@ -121,6 +152,10 @@ static int _at86rf2xx_receiving_packet(void)
     return ret;
 }
 
+/**
+ * @brief   Check if the radio has some packet pending
+ * @return  Return 1 if there is a packet to process, 0 otherwise
+ */
 static int _at86rf2xx_pending_packet(void)
 {
     int ret = (at86rf2xx.events != 0) ? 1 : 0;
@@ -128,24 +163,35 @@ static int _at86rf2xx_pending_packet(void)
     return ret;
 }
 
+/**
+ * @brief   Turn on the radio
+ */
 static int _at86rf2xx_on(void)
 {
     LOG_INFO_("RF: On\n");
+    // FIXME
     return 0;
 }
 
+/**
+ * @brief   Turn off the radio
+ */
 static int _at86rf2xx_off(void)
 {
     LOG_INFO_("RF: Off\n");
+    // FIXME
     return 0;
 }
 
+
+/**
+ * @brief   Retrieve the value of a parameter
+ * @result  RADIO_RESULT_OK if no error. See radio_result_t enum in os/dev/radio.h
+ */
 static radio_result_t _at86rf2xx_get_value(radio_param_t param, radio_value_t *value)
 {
     LOG_INFO("RF: Getting value for param %s\n", param_to_str[param]);
-
-    return RADIO_RESULT_NOT_SUPPORTED; // FIXME
-
+    
     if(!value)
     {
         LOG_ERR_("RF: Invalid value!\n");
@@ -223,11 +269,13 @@ static radio_result_t _at86rf2xx_get_value(radio_param_t param, radio_value_t *v
     }
 }
 
+/**
+ * @brief   Set the value of a parameter
+ * @result  RADIO_RESULT_OK if no error. See radio_result_t enum in os/dev/radio.h
+ */
 static radio_result_t _at86rf2xx_set_value(radio_param_t param, radio_value_t value)
 {
     LOG_INFO("RF: Setting value %d for param %s\n", value, param_to_str[param]);
-
-    return RADIO_RESULT_NOT_SUPPORTED; // FIXME
 
     switch(param) 
     {
@@ -267,18 +315,31 @@ static radio_result_t _at86rf2xx_set_value(radio_param_t param, radio_value_t va
     }
 }
 
+
+/**
+ * @brief   Retrieve the value of a parameter as a void*
+ * @result  RADIO_RESULT_OK if no error. See radio_result_t enum in os/dev/radio.h
+ */
 static radio_result_t _at86rf2xx_get_object(radio_param_t param, void *dest, size_t size)
 {
     LOG_INFO_("RF: Get object\n");
     return RADIO_RESULT_NOT_SUPPORTED;
 }
 
+/**
+ * @brief   Set the value of a parameter as a void*
+ * @result  RADIO_RESULT_OK if no error. See radio_result_t enum in os/dev/radio.h
+ */
 static radio_result_t _at86rf2xx_set_object(radio_param_t param, const void *src, size_t size)
 {
     LOG_INFO_("RF: Set object\n");
     return RADIO_RESULT_NOT_SUPPORTED;
 }
-  
+
+
+/**
+ * @brief   Define a Contiki-NG-compatible radio driver
+ */
 const struct radio_driver at86rf2xx_driver =
 {
     _at86rf2xx_init,
@@ -297,14 +358,20 @@ const struct radio_driver at86rf2xx_driver =
     _at86rf2xx_set_object
 };
 
+/**
+ * @brief  IRQ handler called when a data is received
+ */
 void at86rf2xx_irq_handler(void)
 {
-    printf("\n\nat86rf2xx_irq_handler !!!!!!!\n\n");
-    while(1);
+    /* Increment the pending event count */
     at86rf2xx.events++;
+    /* Signal Contiki to schedule the reception process to handle the event */
     process_poll(&at86rf2xx_process);
 }
 
+/**
+ * @brief  Consume the last event that has occuried
+ */
 static void at86rf2xx_eventHandler()
 {
     /* One less event to handle! */
@@ -327,11 +394,8 @@ static void at86rf2xx_eventHandler()
     /*  Incoming radio frame! */
     if (irq_mask & AT86RF2XX_IRQ_STATUS_MASK__RX_START)
         printf("[at86rf2xx] EVT - RX_START\r\n");
-    //else
-    //    printf("[at86rf2xx] no EVT - RX_START\r\n");
-
-    /*  Done receiving radio frame; call our receive_data function.
-    */
+    
+    /*  Done receiving radio frame; call our receive_data function */
     if (irq_mask & AT86RF2XX_IRQ_STATUS_MASK__TRX_END)
     {
         if(state == AT86RF2XX_STATE_RX_AACK_ON || state == AT86RF2XX_STATE_BUSY_RX_AACK)
@@ -345,13 +409,12 @@ static void at86rf2xx_eventHandler()
             for(int i = 0; i < pkt_len; i++) printf("%x ", ((char*)packetbuf_dataptr())[i]);
             printf("\n");
         }
-        //else
-        //    printf("[at86rf2xx] no EVT - RX_END");
     }
-    //else
-    //    printf("[at86rf2xx] no EVT -TRX_END\r\n");
 }
 
+/**
+ * @brief  Define a Contiki-NG process to handle incoming frame
+ */
 PROCESS_THREAD(at86rf2xx_process, ev, data)
 { 
     PROCESS_BEGIN();
@@ -360,14 +423,15 @@ PROCESS_THREAD(at86rf2xx_process, ev, data)
 
     while(1) 
     {
+        /* Wait until there is a polling event to handle */
         PROCESS_YIELD_UNTIL(ev == PROCESS_EVENT_POLL);
 
-        printf("at86rf2xx_process\n");
-
+        /* If there was an activity on the radio */
         if(at86rf2xx.events)
         {
-            printf("number of events: %d\n)", at86rf2xx.events);
+            /* Handle last event */
             at86rf2xx_eventHandler();
+            /* Tell the Contiki-NG MAC layer there is something to process */
             NETSTACK_MAC.input();    
         }
     }
